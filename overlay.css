@@ -1,0 +1,130 @@
+/* Floating control panel injected by Saved Post Cleaner.
+   Scoped entirely under #igsc-panel so it can't leak into or be affected by Instagram's own styles. */
+
+#igsc-panel {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 250px;
+  background: #262626;
+  color: #f5f5f5;
+  border: 1px solid #3a3a3a;
+  border-radius: 12px;
+  padding: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  z-index: 2147483647; /* max z-index, always sit above IG's own overlays/modals */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  user-select: none;
+}
+
+#igsc-panel * {
+  box-sizing: border-box;
+}
+
+.igsc-header {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.igsc-reset-btn {
+  background: transparent;
+  border: none;
+  color: #8e8e8e;
+  font-size: 11px;
+  font-weight: 400;
+  cursor: pointer;
+  padding: 0;
+}
+
+.igsc-reset-btn:hover {
+  color: #dbdbdb;
+  text-decoration: underline;
+}
+
+.igsc-header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.igsc-status {
+  color: #c7c7c7;
+  margin-bottom: 10px;
+  min-height: 32px;
+}
+
+.igsc-counts {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: #dbdbdb;
+}
+
+.igsc-counts b {
+  color: #ffffff;
+}
+
+.igsc-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.igsc-buttons button {
+  flex: 1;
+  padding: 7px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#igsc-start {
+  background: #0095f6;
+  color: #ffffff;
+}
+
+#igsc-start:disabled {
+  background: #04395e;
+  color: #7fa8c2;
+  cursor: not-allowed;
+}
+
+#igsc-stop {
+  background: #363636;
+  color: #ffffff;
+}
+
+#igsc-stop:disabled {
+  background: #262626;
+  color: #6b6b6b;
+  cursor: not-allowed;
+}
+
+.igsc-log {
+  max-height: 90px;
+  overflow-y: auto;
+  border-top: 1px solid #3a3a3a;
+  padding-top: 8px;
+  color: #a8a8a8;
+  font-size: 11px;
+}
+
+.igsc-log div {
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+/* Applied to the saved-post tile currently being opened/unsaved, so it's
+   obvious at a glance which one the extension is on while watching a run.
+   Outline (not border) so it doesn't shift the grid layout. */
+.igsc-processing {
+  outline: 3px solid #0095f6;
+  outline-offset: -3px;
+}
