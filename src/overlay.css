@@ -19,6 +19,10 @@
   user-select: none;
 }
 
+#igsc-panel.igsc-hidden {
+  display: none;
+}
+
 #igsc-panel * {
   box-sizing: border-box;
 }
@@ -30,6 +34,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  cursor: grab;
+}
+
+.igsc-header:active {
+  cursor: grabbing;
 }
 
 .igsc-reset-btn {

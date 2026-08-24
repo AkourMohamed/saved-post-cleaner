@@ -10,18 +10,33 @@
 
 (() => {
   // ---------------------------------------------------------------------
-  // Guard: only run on a saved-posts page, and never inject the panel twice
+  // Guard: never run twice in the same page
+  //
+  // This script now matches all of instagram.com (needed so it's already
+  // present before you navigate to Saved — see the entry point at the
+  // bottom). Chrome/Brave can re-inject a declarative content script on
+  // History API navigation that (still) matches its pattern, which is
+  // exactly what happens on every in-app navigation here. Without this
+  // guard, each re-injection stacks another full copy of this script —
+  // another message listener, another URL poll, eventually another panel —
+  // in the same page. A pile of duplicate chrome.runtime.onMessage
+  // listeners is consistent with the "message port closed before a
+  // response was received" error seen when messaging this tab.
+  const w = window;
+  if (w.__igscInjected) return;
+  w.__igscInjected = true;
+
+  // ---------------------------------------------------------------------
+  // Guard: only activate on a saved-posts page
   // ---------------------------------------------------------------------
 
   function isSavedPage() {
-    // Matches /<username>/saved  and  /<username>/saved/<anything>
-    // (Instagram's "Saved" section can be /saved/ for the default collection
-    // or /saved/all-posts/ / /saved/<collection-name>/ for others.)
-    return /^\/[A-Za-z0-9._]+\/saved(\/.*)?\/?$/.test(window.location.pathname);
-  }
-
-  if (!isSavedPage() || document.getElementById('igsc-panel')) {
-    return;
+    // Only the "All posts" grid — /<username>/saved/all-posts/. The bare
+    // /<username>/saved/ root is just the collections overview (no post
+    // tiles to act on), and named collections have their own separate
+    // grids this hasn't been taught to handle, so neither should show the
+    // panel.
+    return /^\/[A-Za-z0-9._]+\/saved\/all-posts\/?$/.test(window.location.pathname);
   }
 
   // ---------------------------------------------------------------------
@@ -143,16 +158,23 @@
   // ---------------------------------------------------------------------
 
   let els = {};
+  let panelEl = null;
+  let dragOffset = null;
+  // True once the user has explicitly closed the panel with ✕ — suppresses
+  // re-showing it when navigating back to the All posts grid, until the
+  // toolbar popup's IGSC_SHOW_PANEL message clears it again.
+  let dismissedByUser = false;
 
   function createPanel() {
     const panel = document.createElement('div');
     panel.id = 'igsc-panel';
     panel.innerHTML = `
-      <div class="igsc-header">
+      <div class="igsc-header" id="igsc-drag-handle">
         <span>Saved Post Cleaner</span>
         <span class="igsc-header-actions">
           <button id="igsc-settings" class="igsc-reset-btn" title="Open settings">Settings</button>
           <button id="igsc-reset" class="igsc-reset-btn" title="Reset saved stats and skip log">Reset</button>
+          <button id="igsc-close" class="igsc-reset-btn" title="Close panel">✕</button>
         </span>
       </div>
       <div class="igsc-status" id="igsc-status">Idle. Click Start to begin.</div>
@@ -167,6 +189,7 @@
       <div class="igsc-log" id="igsc-log"></div>
     `;
     document.body.appendChild(panel);
+    panelEl = panel;
 
     els = {
       status: panel.querySelector('#igsc-status'),
@@ -176,14 +199,73 @@
       stopBtn: panel.querySelector('#igsc-stop'),
       resetBtn: panel.querySelector('#igsc-reset'),
       settingsBtn: panel.querySelector('#igsc-settings'),
+      closeBtn: panel.querySelector('#igsc-close'),
       log: panel.querySelector('#igsc-log'),
     };
 
     els.startBtn.addEventListener('click', startAutomation);
     els.stopBtn.addEventListener('click', requestStop);
     els.resetBtn.addEventListener('click', resetStats);
-    els.settingsBtn.addEventListener('click', () => chrome.runtime.openOptionsPage());
+    // chrome.runtime.openOptionsPage() isn't available from a content script
+    // (only from extension pages like a background script or the popup) —
+    // it fails silently there, so open the options page directly by URL
+    // instead. chrome.runtime.getURL() *is* available to content scripts.
+    els.settingsBtn.addEventListener('click', () => window.open(chrome.runtime.getURL('src/options/options.html'), '_blank'));
+    els.closeBtn.addEventListener('click', () => {
+      dismissedByUser = true;
+      hidePanel();
+    });
+
+    const handle = panel.querySelector('#igsc-drag-handle');
+    handle.addEventListener('mousedown', startDrag);
   }
+
+  function showPanel() {
+    if (panelEl) panelEl.classList.remove('igsc-hidden');
+  }
+
+  function hidePanel() {
+    if (panelEl) panelEl.classList.add('igsc-hidden');
+  }
+
+  // Popup -> here: bring the panel back after it's been closed with ✕ (there's
+  // no other way to reveal it again short of reloading the page). Clears
+  // dismissedByUser (see syncWithLocation below) so leaving and returning to
+  // the All posts grid shows it again too, not just this one time.
+  //
+  // sendResponse() is called explicitly (even though the popup doesn't use
+  // the response) — testing showed that leaving it implicit produced "The
+  // message port closed before a response was received" on the sender's
+  // side even though this listener ran fine, so don't rely on the sender
+  // inferring "no response coming" from a listener that returns nothing.
+  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+    if (message && message.type === 'IGSC_SHOW_PANEL') {
+      dismissedByUser = false;
+      showPanel();
+    }
+    sendResponse();
+  });
+
+  function startDrag(e) {
+    // Let header buttons (Settings/Reset/Close) work normally instead of
+    // starting a drag every time one is clicked.
+    if (e.target.closest('button')) return;
+    const rect = panelEl.getBoundingClientRect();
+    dragOffset = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    e.preventDefault();
+  }
+
+  document.addEventListener('mousemove', (e) => {
+    if (!dragOffset || !panelEl) return;
+    panelEl.style.left = `${e.clientX - dragOffset.x}px`;
+    panelEl.style.top = `${e.clientY - dragOffset.y}px`;
+    panelEl.style.right = 'auto';
+    panelEl.style.bottom = 'auto';
+  });
+
+  document.addEventListener('mouseup', () => {
+    dragOffset = null;
+  });
 
   function setStatus(text) {
     if (els.status) els.status.textContent = text;
@@ -566,5 +648,66 @@
     renderPersistedLog();
   }
 
-  init();
+  // ---------------------------------------------------------------------
+  // Entry point
+  //
+  // The content script now runs on all of instagram.com (not just /saved/
+  // URLs) so it's already present by the time you navigate to Saved.
+  // That's needed because Instagram is a single-page app: clicking to Saved
+  // from elsewhere in the app changes the URL via the History API rather
+  // than a full page load, and this script only executes once per actual
+  // page load — without watching for History API navigation too, the panel
+  // would only appear after a manual refresh.
+  // ---------------------------------------------------------------------
+
+  let started = false;
+
+  // Opening a post/reel from the grid (including our own automation
+  // clicking a tile — see processTile) shows it as a dialog *over* the grid,
+  // but Instagram still points the address bar at /p/<code>/ or
+  // /reel/<code>/ while it's open via the History API. That's not actually
+  // leaving the All posts page, so it must not count as "navigated away"
+  // below, or every single post the automation opens would look like a
+  // navigation and immediately stop the run.
+  function isPostOverlayPath(pathname) {
+    return /^\/(p|reel)\/[^/]+\/?$/.test(pathname);
+  }
+
+  // Called on the initial load and every SPA navigation (see the URL poll
+  // and popstate listener below) to keep the panel's
+  // presence in sync with whether you're actually on the All posts grid —
+  // creating/revealing it there, and hiding it (and halting any active run,
+  // since its DOM queries would otherwise be running blind against whatever
+  // unrelated page you've navigated to) if you genuinely navigate elsewhere.
+  function syncWithLocation() {
+    if (isSavedPage()) {
+      if (!started) {
+        started = true;
+        init();
+      } else if (!dismissedByUser) {
+        showPanel();
+      }
+    } else if (!isPostOverlayPath(window.location.pathname)) {
+      if (state.running) requestStop();
+      hidePanel();
+    }
+  }
+
+  // Monkey-patching history.pushState/replaceState was tried here first, but
+  // Instagram's own router captured a direct reference to the native
+  // functions before this content script runs, so it never actually calls
+  // our wrapped versions — the panel just stayed visible on every other
+  // page. A plain poll can't be bypassed that way: it doesn't care *how*
+  // the URL changed, only that it did. popstate (back/forward) is kept too
+  // since it fires instantly rather than waiting for the next tick.
+  let lastPathname = window.location.pathname;
+  setInterval(() => {
+    if (window.location.pathname !== lastPathname) {
+      lastPathname = window.location.pathname;
+      syncWithLocation();
+    }
+  }, 500);
+  window.addEventListener('popstate', syncWithLocation);
+
+  syncWithLocation();
 })();
