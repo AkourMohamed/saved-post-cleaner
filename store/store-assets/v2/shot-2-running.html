@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Shot 2 — running</title>
+<link rel="stylesheet" href="../../../src/overlay.css" />
+<link rel="stylesheet" href="shared.css" />
+</head>
+<body>
+<div class="stage">
+  <div class="copy">
+    <div class="brand"><img src="../../../icons/icon128.png" alt="" />Saved Post Cleaner</div>
+    <h1>Clear hundreds of saves, <em>hands-free</em></h1>
+    <p>Press Start and it unsaves your posts one by one, scrolling for more until your list is empty.</p>
+    <ul class="checks">
+      <li>Live count of every post cleared</li>
+      <li>Stop any time, pick up where you left off</li>
+      <li>Drag, minimize or close the panel</li>
+    </ul>
+  </div>
+
+  <div class="window">
+    <div class="chrome">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <div class="url">instagram.com/you/saved/all-posts/</div>
+      <div class="ext-icon"><img src="../../../icons/icon48.png" alt="" /></div>
+    </div>
+    <div class="page-head"><span>POSTS</span><b>SAVED</b><span>TAGGED</span></div>
+    <div class="grid" data-tiles="16" data-processing="5" data-removing="1,2,3,4"></div>
+  </div>
+
+  <div class="panel-wrap" style="left:768px; top:404px;">
+    <div class="panel-zoom">
+      <div id="igsc-panel" role="region" aria-label="Saved Post Cleaner">
+        <div class="igsc-header">
+          <span class="igsc-title">Saved Post Cleaner<b id="igsc-min-count"></b></span>
+          <span class="igsc-header-actions">
+            <button class="igsc-reset-btn">Settings</button>
+            <button class="igsc-reset-btn">Reset</button>
+            <button class="igsc-reset-btn igsc-icon-btn">–</button>
+            <button class="igsc-reset-btn igsc-icon-btn">✕</button>
+          </span>
+        </div>
+        <div class="igsc-status">Running…</div>
+        <div class="igsc-counts">
+          <span>Unsaved: <b>128</b></span>
+          <span>Skipped: <b>3</b></span>
+        </div>
+        <div class="igsc-buttons">
+          <button id="igsc-start" disabled>Start</button>
+          <button id="igsc-stop">Stop</button>
+        </div>
+        <div class="igsc-log">
+          <div>Skipped: Post did not open in time</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="grid.js"></script>
+</body>
+</html>

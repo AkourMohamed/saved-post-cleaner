@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Shot 5 — languages</title>
+<link rel="stylesheet" href="../../../src/overlay.css" />
+<link rel="stylesheet" href="shared.css" />
+<style>
+  .backdrop {
+    position: absolute;
+    left: 596px; top: 92px; width: 640px; height: 616px;
+    border-radius: 14px; overflow: hidden; opacity: 0.35; filter: blur(2px);
+  }
+  .chips {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px;
+  }
+  .chips span {
+    padding: 6px 12px; border-radius: 999px; font-size: 15px;
+    background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); color: #dfe7f1;
+  }
+  .panel-zoom.small { zoom: 1.3; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="copy">
+    <div class="brand"><img src="../../../icons/icon128.png" alt="" />Saved Post Cleaner</div>
+    <h1>Works in <em>any</em> Instagram language</h1>
+    <p>Recognises Instagram's buttons in 32 languages. The panel and settings speak 12.</p>
+    <div class="chips">
+      <span>English</span><span>Français</span><span>Español</span><span>Português</span>
+      <span>Italiano</span><span>Deutsch</span><span>Nederlands</span><span>Türkçe</span>
+      <span>العربية</span><span>हिन्दी</span><span>Indonesia</span><span>Русский</span>
+    </div>
+  </div>
+
+  <div class="backdrop"><div class="grid" data-tiles="16"></div></div>
+
+  <!-- French, finished run -->
+  <div class="panel-wrap" style="left:620px; top:130px;">
+    <div class="panel-zoom small">
+      <div id="igsc-panel" lang="fr" dir="ltr" role="region" aria-label="Saved Post Cleaner">
+        <div class="igsc-header">
+          <span class="igsc-title">Saved Post Cleaner<b id="igsc-min-count"></b></span>
+          <span class="igsc-header-actions">
+            <button class="igsc-reset-btn">Paramètres</button>
+            <button class="igsc-reset-btn">Réinitialiser</button>
+            <button class="igsc-reset-btn igsc-icon-btn">–</button>
+            <button class="igsc-reset-btn igsc-icon-btn">✕</button>
+          </span>
+        </div>
+        <div class="igsc-status">Terminé — plus aucune publication enregistrée.</div>
+        <div class="igsc-counts">
+          <span>Retirés : <b>312</b></span>
+          <span>Ignorés : <b>4</b></span>
+        </div>
+        <div class="igsc-buttons">
+          <button id="igsc-start">Démarrer</button>
+          <button id="igsc-stop" disabled>Arrêter</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Arabic, right-to-left, running -->
+  <div class="panel-wrap" style="left:810px; top:420px;">
+    <div class="panel-zoom small">
+      <div id="igsc-panel" lang="ar" dir="rtl" role="region" aria-label="Saved Post Cleaner">
+        <div class="igsc-header">
+          <span class="igsc-title">Saved Post Cleaner<b id="igsc-min-count"></b></span>
+          <span class="igsc-header-actions">
+            <button class="igsc-reset-btn">الإعدادات</button>
+            <button class="igsc-reset-btn">إعادة تعيين</button>
+            <button class="igsc-reset-btn igsc-icon-btn">–</button>
+            <button class="igsc-reset-btn igsc-icon-btn">✕</button>
+          </span>
+        </div>
+        <div class="igsc-status">قيد التشغيل…</div>
+        <div class="igsc-counts">
+          <span>تمت الإزالة: <b>87</b></span>
+          <span>تم التخطي: <b>1</b></span>
+        </div>
+        <div class="igsc-buttons">
+          <button id="igsc-start" disabled>ابدأ</button>
+          <button id="igsc-stop">إيقاف</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="grid.js"></script>
+</body>
+</html>

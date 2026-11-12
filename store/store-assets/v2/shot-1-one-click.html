@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Shot 1 — one click to Saved</title>
+<link rel="stylesheet" href="../../../src/overlay.css" />
+<link rel="stylesheet" href="shared.css" />
+</head>
+<body>
+<div class="stage">
+  <div class="copy">
+    <div class="brand"><img src="../../../icons/icon128.png" alt="" />Saved Post Cleaner</div>
+    <h1>One click to your <em>Saved posts</em></h1>
+    <p>Click the toolbar icon from any tab to open your Instagram Saved posts, with the cleaner ready.</p>
+    <ul class="checks">
+      <li>Works from any website</li>
+      <li>Stays out of sight until you ask</li>
+      <li>No login, no password, no APIs</li>
+    </ul>
+  </div>
+
+  <div class="window">
+    <div class="chrome">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <div class="url">instagram.com/you/saved/all-posts/</div>
+      <div class="ext-icon active"><img src="../../../icons/icon48.png" alt="" /></div>
+    </div>
+    <div class="page-head"><span>POSTS</span><b>SAVED</b><span>TAGGED</span></div>
+    <div class="grid" data-tiles="16"></div>
+  </div>
+
+  <div class="ripple" style="left:1175px; top:84px;"></div>
+  <svg class="cursor" style="left:1204px; top:113px;" viewBox="0 0 26 34">
+    <path d="M2 2 L2 27 L8.5 21 L13 31 L17.5 29 L13 19.5 L22 19.5 Z" fill="#fff" stroke="#111" stroke-width="2" stroke-linejoin="round"/>
+  </svg>
+  <div class="tooltip" style="right:40px; top:150px;">Saved Post Cleaner — open your saved posts</div>
+
+  <div class="panel-wrap" style="left:768px; top:420px;">
+    <div class="panel-zoom">
+      <div id="igsc-panel" role="region" aria-label="Saved Post Cleaner">
+        <div class="igsc-header">
+          <span class="igsc-title">Saved Post Cleaner<b id="igsc-min-count"></b></span>
+          <span class="igsc-header-actions">
+            <button class="igsc-reset-btn">Settings</button>
+            <button class="igsc-reset-btn">Reset</button>
+            <button class="igsc-reset-btn igsc-icon-btn">–</button>
+            <button class="igsc-reset-btn igsc-icon-btn">✕</button>
+          </span>
+        </div>
+        <div class="igsc-status">Idle. Click Start to begin.</div>
+        <div class="igsc-counts">
+          <span>Unsaved: <b>0</b></span>
+          <span>Skipped: <b>0</b></span>
+        </div>
+        <div class="igsc-buttons">
+          <button id="igsc-start">Start</button>
+          <button id="igsc-stop" disabled>Stop</button>
+        </div>
+        <div class="igsc-log"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="grid.js"></script>
+</body>
+</html>

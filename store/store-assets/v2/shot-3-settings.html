@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Shot 3 — settings</title>
+<link rel="stylesheet" href="shared.css" />
+<style>
+  /* Hand-built from options.css colours and the real English strings and
+     default values (config.js), so it matches the shipped Settings page. */
+  .settings {
+    position: absolute;
+    inset: 48px 0 0 0;
+    background: #121212;
+    padding: 26px 34px;
+    color: #f5f5f5;
+    font-size: 14px;
+  }
+  .settings h2 { margin: 0 0 18px; font-size: 21px; font-weight: 700; }
+  .presets { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; color: #dbdbdb; }
+  .preset {
+    padding: 7px 16px; border-radius: 8px; border: 1px solid #3a3a3a;
+    background: #262626; color: #dbdbdb; font-weight: 600; font-size: 13px;
+  }
+  .preset.on { border-color: #0095f6; color: #fff; box-shadow: 0 0 0 1px #0095f6 inset; }
+  fieldset { border: 1px solid #3a3a3a; border-radius: 10px; margin: 0 0 14px; padding: 12px 16px 14px; }
+  legend { padding: 0 6px; font-weight: 600; color: #f5f5f5; }
+  .row { display: flex; gap: 14px; }
+  .field { flex: 1; display: flex; flex-direction: column; gap: 6px; color: #dbdbdb; font-size: 13px; }
+  .input {
+    height: 34px; border-radius: 6px; background: #1e1e1e; border: 1px solid #3a3a3a;
+    color: #f5f5f5; display: flex; align-items: center; padding: 0 10px; font-size: 14px;
+  }
+  .check { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; color: #dbdbdb; }
+  .box { width: 16px; height: 16px; border-radius: 4px; background: #0095f6; display: grid; place-items: center; color: #fff; font-size: 11px; font-weight: 800; }
+  .actions { display: flex; gap: 10px; margin-top: 4px; }
+  .btn { padding: 9px 18px; border-radius: 8px; font-weight: 600; font-size: 13px; }
+  .btn.primary { background: #0095f6; color: #fff; }
+  .btn.secondary { background: #262626; color: #dbdbdb; border: 1px solid #3a3a3a; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="copy">
+    <div class="brand"><img src="../../../icons/icon128.png" alt="" />Saved Post Cleaner</div>
+    <h1>Safe pacing <em>you control</em></h1>
+    <p>Randomized delays, cooldown breaks and a per-run limit keep your activity looking human.</p>
+    <ul class="checks">
+      <li>Careful, Balanced and Fast presets</li>
+      <li>Recommended defaults built in</li>
+      <li>Fine-tune every value if you want</li>
+    </ul>
+  </div>
+
+  <div class="window">
+    <div class="chrome">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <div class="url">Saved Post Cleaner — Settings</div>
+      <div class="ext-icon"><img src="../../../icons/icon48.png" alt="" /></div>
+    </div>
+    <div class="settings">
+      <h2>Saved Post Cleaner — Settings</h2>
+      <div class="presets">
+        <span>Preset:</span>
+        <span class="preset">Careful</span>
+        <span class="preset on">Balanced</span>
+        <span class="preset">Fast</span>
+      </div>
+      <fieldset>
+        <legend>Pacing between posts</legend>
+        <div class="row">
+          <div class="field">Minimum delay (seconds)<div class="input">1.2</div></div>
+          <div class="field">Maximum delay (seconds)<div class="input">2.8</div></div>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Cooldown break</legend>
+        <div class="check"><span class="box">✓</span>Take a longer break periodically</div>
+        <div class="row">
+          <div class="field">Every N unsaves<div class="input">25</div></div>
+          <div class="field">Min (seconds)<div class="input">15</div></div>
+          <div class="field">Max (seconds)<div class="input">30</div></div>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Session limit</legend>
+        <div class="field">Stop after this many actions in one run<div class="input" style="width:140px">200</div></div>
+      </fieldset>
+      <div class="actions">
+        <span class="btn primary">Save</span>
+        <span class="btn secondary">Restore recommended defaults</span>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

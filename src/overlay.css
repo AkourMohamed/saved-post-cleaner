@@ -5,7 +5,7 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 270px;
+  width: 300px;
   background: #262626;
   color: #f5f5f5;
   border: 1px solid #3a3a3a;
@@ -244,7 +244,7 @@
 }
 
 /* The two icon buttons (minimize, close) sit next to two text buttons in a
-   270px header, so they get a fixed square footprint and a larger glyph —
+   300px header, so they get a fixed square footprint and a larger glyph —
    otherwise they end up as 6px-wide click targets. */
 .igsc-icon-btn {
   width: 16px;

@@ -109,17 +109,32 @@ The extension's on-page control panel and its unsave automation run as a content
 
 **Data disclosure:** None collected. All state stays in the user's local/synced Chrome storage.
 
-## Graphic assets to produce
+## Graphic assets
 
-The current screenshots show a tiny panel inside a large dark frame, so the
-text is unreadable at thumbnail size. Replace them with 1280×800 images where
-the panel fills most of the frame and each carries a one-line caption:
+Generated from HTML in  — each page links the real
+, so the panel in every image is the shipped panel, not a
+drawing of it. Upload these from :
 
-1. "One click to your Saved posts" — toolbar icon highlighted, Saved grid behind the panel
-2. "Start, Stop, and a live count" — panel running, large
-3. "Pacing you control" — Settings page, presets visible
-4. "Stops and tells you why" — panel showing an attention status
-5. "Works in 32 Instagram languages" — panel in Arabic or French
+| Dashboard slot | File |
+| --- | --- |
+| Screenshot 1 |  — one click to your Saved posts |
+| Screenshot 2 |  — clearing hands-free, live count |
+| Screenshot 3 |  — pacing presets and settings |
+| Screenshot 4 |  — stops and says why |
+| Screenshot 5 |  — French and Arabic panels |
+| Small promo tile (440×280) |  |
+| Marquee promo tile (1400×560) |  |
 
-Also add a **small promo tile (440×280)** — the live listing shows none, while
-competing listings in "Related" all have one.
+Screenshots are 1280×800, 24-bit PNG (no alpha), as the Store asks.
+
+To change copy or regenerate after a UI change, edit the HTML and run:
+
+\ok   shot-1-one-click 1280x800
+ok   shot-2-running 1280x800
+ok   shot-3-settings 1280x800
+ok   shot-4-safety 1280x800
+ok   shot-5-languages 1280x800
+ok   promo-small-440x280 440x280
+ok   marquee-1400x560 1400x560
+It uses your local Chrome, Edge or Brave in headless mode (set  to
+override). Delete the old  from the dashboard.

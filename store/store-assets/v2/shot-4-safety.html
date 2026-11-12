@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Shot 4 — stops and explains</title>
+<link rel="stylesheet" href="../../../src/overlay.css" />
+<link rel="stylesheet" href="shared.css" />
+</head>
+<body>
+<div class="stage">
+  <div class="copy">
+    <div class="brand"><img src="../../../icons/icon128.png" alt="" />Saved Post Cleaner</div>
+    <h1>Stops — and tells you <em>why</em></h1>
+    <p>If Instagram slows you down or something looks wrong, it stops at once and says what happened.</p>
+    <ul class="checks">
+      <li>Detects Instagram's rate limits</li>
+      <li>Never guesses which button to click</li>
+      <li>Never reports success after failing</li>
+    </ul>
+  </div>
+
+  <div class="window">
+    <div class="chrome">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <div class="url">instagram.com/you/saved/all-posts/</div>
+      <div class="ext-icon"><img src="../../../icons/icon48.png" alt="" /></div>
+    </div>
+    <div class="page-head"><span>POSTS</span><b>SAVED</b><span>TAGGED</span></div>
+    <div class="grid" data-tiles="16"></div>
+  </div>
+
+  <div class="panel-wrap" style="left:768px; top:372px;">
+    <div class="panel-zoom">
+      <div id="igsc-panel" class="igsc-attention" role="region" aria-label="Saved Post Cleaner">
+        <div class="igsc-header">
+          <span class="igsc-title">Saved Post Cleaner<b id="igsc-min-count"></b></span>
+          <span class="igsc-header-actions">
+            <button class="igsc-reset-btn">Settings</button>
+            <button class="igsc-reset-btn">Reset</button>
+            <button class="igsc-reset-btn igsc-icon-btn">–</button>
+            <button class="igsc-reset-btn igsc-icon-btn">✕</button>
+          </span>
+        </div>
+        <div class="igsc-status">Instagram showed a rate-limit message — stopping to be safe. Try again later.</div>
+        <div class="igsc-counts">
+          <span>Unsaved: <b>64</b></span>
+          <span>Skipped: <b>2</b></span>
+        </div>
+        <div class="igsc-buttons">
+          <button id="igsc-start">Start</button>
+          <button id="igsc-stop" disabled>Stop</button>
+        </div>
+        <div class="igsc-log">
+          <div>Skipped: Clicked unsave but could not confirm it took effect</div>
+          <div>Skipped: Could not confidently identify the unsave control</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="grid.js"></script>
+</body>
+</html>
