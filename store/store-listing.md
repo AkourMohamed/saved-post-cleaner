@@ -4,9 +4,22 @@ Reference copy for the Developer Dashboard fields. Not used by the extension
 itself — just kept here so it's versioned alongside the code and easy to
 update later.
 
+Listing version: **1.5.0** (the live listing was still on 1.2.0 when this was
+written — English only, with the older description).
+
+## Name
+
+The Store title comes from `name` in `manifest.json`, so change it there, not
+in the dashboard. It now includes the word people actually search for:
+
+```
+Saved Post Cleaner – Unsave Instagram Saved Posts
+```
+
 ## Category
 
-**Productivity**
+**Tools** (this is what the live listing already shows — keep the dashboard
+and this file in step).
 
 ## Summary (short description, ≤132 characters)
 
@@ -17,15 +30,29 @@ Bulk-unsaves your saved Instagram posts, one at a time, in your own browser sess
 ## Detailed description
 
 ```
-Saved Post Cleaner helps you clear out a large Instagram "Saved" list without tapping "Remove" on every post by hand.
+Unsave hundreds of Instagram saved posts without tapping "Remove" on every one.
+
+Saved Post Cleaner clears out a large Instagram "Saved" list for you, one post at a time, using your own logged-in session.
+
+• One click to your Saved posts — click the toolbar icon from any tab and it takes you straight there
+• Start / Stop panel on the page — drag it anywhere, minimize it, or close it
+• Safe pacing — randomized delays, cooldown breaks and a per-run limit, all adjustable
+• Works in any Instagram language — recognises Instagram's own buttons in 32 languages
+• Stops and tells you why when something is wrong — it never fails silently
+• Private — no password, no account, no network calls
 
 HOW IT WORKS
-You log into Instagram yourself, in a normal tab, the same way you always do. Once you're on your Saved page, this extension adds a small on-page panel with a Start and Stop button. When you click Start, it opens each saved post, clicks its own "remove from saved" control, closes the post, and moves to the next one — the same clicks you'd make by hand, just automated. Nothing runs until you click Start, and you can click Stop at any time.
+1. Log into Instagram yourself, in a normal tab, the same way you always do.
+2. Click the Saved Post Cleaner icon in your toolbar. It opens your Saved posts and shows a small control panel. (The panel never appears on its own.)
+3. Click Start. It opens each saved post, clicks its own "remove from saved" control, closes the post and moves to the next one — the same clicks you'd make by hand, just automated.
+4. Click Stop at any time.
+
+Nothing is unsaved until you press Start.
 
 WHAT IT DOESN'T DO
 - It never asks for or stores your Instagram password — you log in yourself, normally.
 - It makes no network or API calls of any kind. Everything happens by reading and clicking the page you're already on.
-- It doesn't run in the background or do anything automatically — only after you press Start.
+- It never unsaves anything on its own — only after you press Start.
 
 BUILT-IN SAFETY
 - Randomized delays between posts, plus an optional periodic cooldown break — both configurable in Settings — so activity doesn't look like a flat, continuous bot run.
@@ -35,15 +62,28 @@ BUILT-IN SAFETY
 - Every stop explains itself in the panel. It never skips your whole list in silence and then reports success.
 
 SETTINGS
-Open the Settings page to adjust the interface language, the pacing delay, the cooldown break, and the session limit, or restore the recommended defaults at any time.
+Open the Settings page to adjust the interface language, the pacing delay, the cooldown break and the session limit, or restore the recommended defaults at any time. Presets (Careful, Balanced, Fast) fill them in with one click.
 
 LANGUAGES
 Works whatever language your Instagram is in — it recognises Instagram's own buttons in 32 languages, and if yours isn't among them you can enter the button's label once under Settings > Advanced.
 
 The extension's own interface is available in English, French, Spanish, Portuguese, Italian, German, Dutch, Turkish, Arabic (right-to-left), Hindi, Indonesian and Russian — set automatically from your browser's language, or chosen manually in Settings.
 
+SUPPORT
+Something not working? Open an issue and include what the panel said: https://github.com/AkourMohamed/saved-post-cleaner/issues
+
 This extension is not affiliated with, endorsed by, or sponsored by Instagram or Meta Platforms, Inc. Instagram is a trademark of Meta Platforms, Inc.
 ```
+
+## Support / homepage URL fields
+
+```
+https://github.com/AkourMohamed/saved-post-cleaner
+```
+
+The issues link in the description is built from the repo's `origin` remote.
+Confirm Issues is enabled on the repository (Settings → Features) before
+publishing, or the link 404s.
 
 ## Privacy tab — permission justification
 
@@ -54,7 +94,32 @@ Automates unsaving posts on the user's own Instagram Saved page via on-page DOM 
 
 **Justification for `storage` permission:**
 ```
-Used only to store the user's own pacing/settings preferences and local activity counters (posts unsaved/skipped) on-device via chrome.storage. No data is collected, transmitted, or shared with any server.
+Used only to store the user's own pacing/settings preferences, local activity counters (posts unsaved/skipped), the panel's on-screen position, and the user's own Instagram username (so the toolbar button can open their Saved page) on-device via chrome.storage. No data is collected, transmitted, or shared with any server.
+```
+
+**Justification for `activeTab` permission:**
+```
+Used when the user clicks the toolbar button, to see whether the current tab is already their Instagram Saved page (in which case the on-page control panel is shown) or another page (in which case the tab or a new tab is taken to the user's Saved page). It is only used in response to that click and reads nothing from other sites.
+```
+
+**Justification for host access (`https://www.instagram.com/*`):**
+```
+The extension's on-page control panel and its unsave automation run as a content script on instagram.com, because Instagram is a single-page app and the user can reach their Saved page from any instagram.com URL without a full page load. The script does nothing on pages other than the user's own Saved page except remember their username and, after a toolbar click, navigate to it. It makes no network requests.
 ```
 
 **Data disclosure:** None collected. All state stays in the user's local/synced Chrome storage.
+
+## Graphic assets to produce
+
+The current screenshots show a tiny panel inside a large dark frame, so the
+text is unreadable at thumbnail size. Replace them with 1280×800 images where
+the panel fills most of the frame and each carries a one-line caption:
+
+1. "One click to your Saved posts" — toolbar icon highlighted, Saved grid behind the panel
+2. "Start, Stop, and a live count" — panel running, large
+3. "Pacing you control" — Settings page, presets visible
+4. "Stops and tells you why" — panel showing an attention status
+5. "Works in 32 Instagram languages" — panel in Arabic or French
+
+Also add a **small promo tile (440×280)** — the live listing shows none, while
+competing listings in "Related" all have one.
