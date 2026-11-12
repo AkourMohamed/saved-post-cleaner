@@ -23,8 +23,12 @@ and this file in step).
 
 ## Summary (short description, ≤132 characters)
 
+Like the title, the Store takes this from `manifest.json` (the `description`
+field) and it can't be edited in the dashboard — change it there. Current
+text, 131 characters:
+
 ```
-Bulk-unsaves your saved Instagram posts, one at a time, in your own browser session. Any Instagram language. No login, no APIs.
+Unsaves your Instagram saved posts one at a time in your own logged-in session. Works in any Instagram language. No login, no APIs.
 ```
 
 ## Detailed description
