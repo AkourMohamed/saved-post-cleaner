@@ -111,30 +111,27 @@ The extension's on-page control panel and its unsave automation run as a content
 
 ## Graphic assets
 
-Generated from HTML in  — each page links the real
-, so the panel in every image is the shipped panel, not a
-drawing of it. Upload these from :
+Generated from HTML in `store/store-assets/v2/` — each page links the real
+`src/overlay.css`, so the panel in every image is the shipped panel, not a
+drawing of it. Upload these from `store/store-assets/v2/out/`:
 
 | Dashboard slot | File |
 | --- | --- |
-| Screenshot 1 |  — one click to your Saved posts |
-| Screenshot 2 |  — clearing hands-free, live count |
-| Screenshot 3 |  — pacing presets and settings |
-| Screenshot 4 |  — stops and says why |
-| Screenshot 5 |  — French and Arabic panels |
-| Small promo tile (440×280) |  |
-| Marquee promo tile (1400×560) |  |
+| Screenshot 1 | `shot-1-one-click.png` — one click to your Saved posts |
+| Screenshot 2 | `shot-2-running.png` — clearing hands-free, live count |
+| Screenshot 3 | `shot-3-settings.png` — pacing presets and settings |
+| Screenshot 4 | `shot-4-safety.png` — stops and says why |
+| Screenshot 5 | `shot-5-languages.png` — French and Arabic panels |
+| Small promo tile (440×280) | `promo-small-440x280.png` |
+| Marquee promo tile (1400×560) | `marquee-1400x560.png` |
 
 Screenshots are 1280×800, 24-bit PNG (no alpha), as the Store asks.
 
 To change copy or regenerate after a UI change, edit the HTML and run:
 
-\ok   shot-1-one-click 1280x800
-ok   shot-2-running 1280x800
-ok   shot-3-settings 1280x800
-ok   shot-4-safety 1280x800
-ok   shot-5-languages 1280x800
-ok   promo-small-440x280 440x280
-ok   marquee-1400x560 1400x560
-It uses your local Chrome, Edge or Brave in headless mode (set  to
-override). Delete the old  from the dashboard.
+```
+node store/store-assets/v2/render.mjs
+```
+
+It uses your local Chrome, Edge or Brave in headless mode (set `CHROME` to
+override). Delete the old `screenshot-1-panel.png` from the dashboard.
