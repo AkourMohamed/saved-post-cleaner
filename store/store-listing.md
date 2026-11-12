@@ -74,20 +74,18 @@ Works whatever language your Instagram is in — it recognises Instagram's own b
 The extension's own interface is available in English, French, Spanish, Portuguese, Italian, German, Dutch, Turkish, Arabic (right-to-left), Hindi, Indonesian and Russian — set automatically from your browser's language, or chosen manually in Settings.
 
 SUPPORT
-Something not working? Open an issue and include what the panel said: https://github.com/AkourMohamed/saved-post-cleaner/issues
+Something not working? Use the developer email on this page and include what the panel said — that message usually pinpoints the problem.
 
 This extension is not affiliated with, endorsed by, or sponsored by Instagram or Meta Platforms, Inc. Instagram is a trademark of Meta Platforms, Inc.
 ```
 
 ## Support / homepage URL fields
 
-```
-https://github.com/AkourMohamed/saved-post-cleaner
-```
-
-The issues link in the description is built from the repo's `origin` remote.
-Confirm Issues is enabled on the repository (Settings → Features) before
-publishing, or the link 404s.
+**Leave both empty.** The GitHub repository is private, so any link to it
+(code or Issues) is a 404 for everyone but the owner. Support goes through
+the developer email the Store already shows on the listing, which the
+description's SUPPORT section points to. If the repository is ever made
+public, its Issues page can go here instead.
 
 ## Privacy tab — permission justification
 
