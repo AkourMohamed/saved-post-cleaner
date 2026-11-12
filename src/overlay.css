@@ -228,19 +228,29 @@
   font-weight: 700;
 }
 
-/* Four controls now share the header with the title. The title yields
-   first (it's the least useful pixel there), and the actions never shrink,
-   so the buttons keep their click targets instead of collapsing to slivers
-   in the longer-worded languages. */
+/* Four controls share the header with the title. Neither side shrinks:
+   when they don't fit on one line (German today; French with no room to
+   spare; any longer-worded language later), the actions wrap onto a second
+   line, right-aligned, instead of eating into the title. Previously the
+   title yielded and showed "Saved Post C…" in German. The ellipsis stays
+   only as a last resort for a title wider than the whole panel. */
+.igsc-header {
+  flex-wrap: wrap;
+  column-gap: 10px;
+  row-gap: 6px;
+}
+
 .igsc-title {
+  flex: none;
+  max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-width: 0;
 }
 
 .igsc-header-actions {
   flex: none;
+  margin-inline-start: auto;
 }
 
 /* The two icon buttons (minimize, close) sit next to two text buttons in a

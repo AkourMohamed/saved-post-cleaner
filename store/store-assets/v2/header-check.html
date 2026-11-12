@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Panel header fit check</title>
+<link rel="stylesheet" href="../../../src/overlay.css" />
+<style>
+  body { margin: 0; background: #000; font-family: "Segoe UI", sans-serif; }
+  .row { position: relative; height: 70px; }
+  .row #igsc-panel { position: absolute; top: 4px; left: 4px; bottom: auto; right: auto; }
+</style>
+</head>
+<body>
+<div id="rows"></div>
+<pre id="result"></pre>
+<script src="../../../src/config.js"></script>
+<script src="../../../src/i18n.js"></script>
+<script>
+  // Renders the real panel header (same markup as content.js createPanel)
+  // in every shipped UI language and reports whether the title is cut off.
+  const out = [];
+  for (const zoom of [1, 1.3, 1.5]) for (const lang of Object.keys(IGSC_MESSAGES)) {
+    const m = IGSC_MESSAGES[lang];
+    const row = document.createElement('div');
+    row.className = 'row'; row.style.zoom = zoom; row.style.height = 'auto'; row.style.minHeight = '90px';
+    row.innerHTML = `
+      <div id="igsc-panel" lang="${lang}" dir="${igscDirFor(lang)}">
+        <div class="igsc-header">
+          <span class="igsc-title">Saved Post Cleaner<b id="igsc-min-count"></b></span>
+          <span class="igsc-header-actions">
+            <button class="igsc-reset-btn">${m.panelSettings}</button>
+            <button class="igsc-reset-btn">${m.panelReset}</button>
+            <button class="igsc-reset-btn igsc-icon-btn">–</button>
+            <button class="igsc-reset-btn igsc-icon-btn">✕</button>
+          </span>
+        </div>
+      </div>`;
+    document.getElementById('rows').appendChild(row);
+    const title = row.querySelector('.igsc-title');
+    const header = row.querySelector('.igsc-header');
+    const cut = title.scrollWidth > title.clientWidth + 1;
+    const wrapped = Math.round(header.getBoundingClientRect().height) > 24 * zoom;
+    out.push(`x${zoom} ${lang.padEnd(4)} ${wrapped ? "wrapped" : "one-line"} ${cut ? 'TRUNCATED' : 'ok       '} title ${title.clientWidth}/${title.scrollWidth}px  header ${Math.round(header.getBoundingClientRect().height)}px  [${m.panelSettings} | ${m.panelReset}]`);
+  }
+  document.getElementById('result').textContent = out.join('\n');
+</script>
+</body>
+</html>
