@@ -5,7 +5,7 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 250px;
+  width: 270px;
   background: #262626;
   color: #f5f5f5;
   border: 1px solid #3a3a3a;
@@ -136,4 +136,136 @@
 .igsc-processing {
   outline: 3px solid #0095f6;
   outline-offset: -3px;
+}
+
+/* RTL (Arabic). content.js sets an explicit dir on #igsc-panel from the
+   chosen language rather than letting it inherit, because Instagram sets
+   dir="rtl" on <html> for its own RTL locales — without this the panel
+   would flip to RTL while still showing English, and stay LTR when showing
+   Arabic on an English Instagram.
+
+   The flex rows above (header, counts, buttons) mirror themselves once dir
+   flips, so only text alignment needs stating. `start` rather than
+   `left`/`right` so one rule covers both directions. The panel itself stays
+   pinned bottom-right in every language — that's a screen position the user
+   can drag, not a reading direction. */
+#igsc-panel {
+  text-align: start;
+}
+
+/* Minimized: the panel collapses to just its draggable title bar, still
+   showing the live unsaved count so a run in progress is obviously still
+   running. Everything else hides rather than unmounting, so restoring is
+   instant and the run is never interrupted by the panel's own chrome. */
+#igsc-panel.igsc-minimized {
+  width: auto;
+  padding: 8px 12px;
+}
+
+#igsc-panel.igsc-minimized .igsc-header {
+  margin-bottom: 0;
+  gap: 12px;
+}
+
+#igsc-panel.igsc-minimized .igsc-status,
+#igsc-panel.igsc-minimized .igsc-counts,
+#igsc-panel.igsc-minimized .igsc-buttons,
+#igsc-panel.igsc-minimized .igsc-log,
+#igsc-panel.igsc-minimized .igsc-prompt,
+#igsc-panel.igsc-minimized #igsc-settings,
+#igsc-panel.igsc-minimized #igsc-reset {
+  display: none;
+}
+
+/* Stated explicitly rather than relying on the UA default for [hidden],
+   since the rules above set display on these same elements and would
+   otherwise win. */
+#igsc-panel [hidden] {
+  display: none !important;
+}
+
+/* The post-run review/tip ask. Deliberately quiet — a bordered strip below
+   the controls, not a modal, not a colour that competes with Start. It
+   shows once, after real work has been done, and any click retires it. */
+.igsc-prompt {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  background: #1e1e1e;
+  color: #c7c7c7;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.igsc-prompt-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.igsc-prompt a {
+  color: #0095f6;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.igsc-prompt a:hover {
+  text-decoration: underline;
+}
+
+/* Pushes the dismiss ✕ to the far end in both text directions. */
+#igsc-prompt-dismiss {
+  margin-inline-start: auto;
+}
+
+#igsc-min-count {
+  color: #0095f6;
+  font-weight: 700;
+}
+
+/* Four controls now share the header with the title. The title yields
+   first (it's the least useful pixel there), and the actions never shrink,
+   so the buttons keep their click targets instead of collapsing to slivers
+   in the longer-worded languages. */
+.igsc-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.igsc-header-actions {
+  flex: none;
+}
+
+/* The two icon buttons (minimize, close) sit next to two text buttons in a
+   270px header, so they get a fixed square footprint and a larger glyph —
+   otherwise they end up as 6px-wide click targets. */
+.igsc-icon-btn {
+  width: 16px;
+  font-size: 14px;
+  line-height: 1;
+  text-align: center;
+}
+
+.igsc-icon-btn:hover {
+  text-decoration: none;
+}
+
+/* A status that needs the user to do something — Instagram's unsave button
+   wasn't found, a rate limit was hit, an unexpected error. A stopped run
+   that needs attention must not look like a running one; the panel is
+   small and parked in a corner, so the status text alone doesn't carry. */
+#igsc-panel.igsc-attention {
+  border-color: #e0a030;
+}
+
+#igsc-panel.igsc-attention .igsc-status {
+  color: #ffcc66;
+  font-weight: 600;
 }

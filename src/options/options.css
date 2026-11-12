@@ -179,3 +179,108 @@ button {
     color: #6a6a6a;
   }
 }
+
+/* Pacing presets. Secondary styling on purpose — these are a shortcut to
+   the fields below, not a separate mode, so they must not read as the
+   primary control of the section. */
+.options-presets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.preset-label {
+  font-size: 13px;
+  color: #dbdbdb;
+}
+
+.preset-btn {
+  background: #262626;
+  color: #dbdbdb;
+  border: 1px solid #3a3a3a;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.preset-btn:hover {
+  background: #303030;
+}
+
+.text-input {
+  background: #1e1e1e;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  color: #f5f5f5;
+  padding: 7px 10px;
+  font-size: 13px;
+  width: 100%;
+}
+
+@media (prefers-color-scheme: light) {
+  .preset-label {
+    color: #4a4a4a;
+  }
+
+  .preset-btn {
+    background: #f0f0f0;
+    color: #1a1a1a;
+    border-color: #c7c7c7;
+  }
+
+  .preset-btn:hover {
+    background: #e6e6e6;
+  }
+
+  .text-input {
+    background: #ffffff;
+    border-color: #c7c7c7;
+    color: #1a1a1a;
+  }
+}
+
+/* Language dropdown — matched to the number inputs above it so the whole
+   form reads as one control set. `width: auto` (rather than the inputs'
+   fixed 140px) because the option labels are endonyms of very different
+   lengths: "Bahasa Indonesia" and "ⵜⴰⵎⴰⵣⵉⵖⵜ" can't share a single fixed
+   width without either clipping one or leaving dead space after the other. */
+select {
+  background: #1e1e1e;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  color: #f5f5f5;
+  padding: 7px 10px;
+  font-size: 13px;
+  width: auto;
+  max-width: 100%;
+  align-self: flex-start;
+}
+
+@media (prefers-color-scheme: light) {
+  select {
+    background: #ffffff;
+    border-color: #c7c7c7;
+    color: #1a1a1a;
+  }
+}
+
+/* RTL (Arabic). The page is a single centered column, so almost nothing
+   needs mirroring — only the places where a rule assumed text starts on
+   the left. `dir` is set on <html> by options.js from the chosen language. */
+[dir="rtl"] .options-actions {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+[dir="rtl"] label,
+[dir="rtl"] select,
+[dir="rtl"] input[type="number"] {
+  align-self: auto;
+  text-align: right;
+}
+
+[dir="rtl"] select {
+  align-self: flex-start;
+}

@@ -6,73 +6,106 @@
 <link rel="stylesheet" href="options.css" />
 </head>
 <body>
+<!--
+  Every user-visible string carries a data-i18n key instead of literal text;
+  options.js fills them in from the catalog in i18n.js once it knows which
+  language to use. Label text is wrapped in its own <span> rather than left
+  as a bare text node so the fill can set textContent without wiping the
+  <input> that shares the <label>.
+-->
 <main class="options-page">
-  <h1>Saved Post Cleaner — Settings</h1>
-  <p class="options-intro">
-    These control how fast the automation runs on your Instagram Saved page and how it paces
-    itself. The <strong>Recommended</strong> values (use "Restore recommended defaults" below) are a
-    reasonable balance; you can override any of them, but faster settings increase the chance
-    Instagram temporarily rate-limits the action on your account. Changes apply the next time you
-    load or reload your Saved page.
-  </p>
+  <h1 data-i18n="optTitle"></h1>
+  <p class="options-intro" data-i18n="optIntro"></p>
 
   <form id="settings-form">
     <fieldset>
-      <legend>Pacing between posts</legend>
+      <legend data-i18n="optLangLegend"></legend>
       <label>
-        Minimum delay (seconds)
+        <span data-i18n="optLangLabel"></span>
+        <select id="language"></select>
+      </label>
+      <p class="field-hint" data-i18n="optLangHint"></p>
+    </fieldset>
+
+    <fieldset>
+      <legend data-i18n="optPacingLegend"></legend>
+      <!--
+        Presets, because the three numbers below are only meaningful to
+        someone who already knows what Instagram tolerates. These just fill
+        the fields in — nothing is hidden, so anyone who wants to tune the
+        exact values still can.
+      -->
+      <div class="options-presets">
+        <span class="preset-label" data-i18n="optProfileLabel"></span>
+        <button type="button" class="preset-btn" data-preset="careful" data-i18n="optProfileCareful"></button>
+        <button type="button" class="preset-btn" data-preset="balanced" data-i18n="optProfileBalanced"></button>
+        <button type="button" class="preset-btn" data-preset="fast" data-i18n="optProfileFast"></button>
+      </div>
+      <p class="field-hint" data-i18n="optProfileHint"></p>
+      <label>
+        <span data-i18n="optMinDelay"></span>
         <input type="number" id="minDelaySec" min="0.1" step="0.1" required />
       </label>
       <label>
-        Maximum delay (seconds)
+        <span data-i18n="optMaxDelay"></span>
         <input type="number" id="maxDelaySec" min="0.1" step="0.1" required />
       </label>
-      <p class="field-hint">Randomized between these two values before every post — never a fixed interval, which is itself something anti-automation checks look for.</p>
+      <p class="field-hint" data-i18n="optPacingHint"></p>
     </fieldset>
 
     <fieldset>
-      <legend>Cooldown break</legend>
+      <legend data-i18n="optCooldownLegend"></legend>
       <label class="checkbox-label">
         <input type="checkbox" id="cooldownEnabled" />
-        Take a longer break periodically
+        <span data-i18n="optCooldownEnable"></span>
       </label>
       <label>
-        Every N successful unsaves
+        <span data-i18n="optCooldownEvery"></span>
         <input type="number" id="cooldownEvery" min="1" step="1" />
       </label>
       <label>
-        Break length — minimum (seconds)
+        <span data-i18n="optCooldownMin"></span>
         <input type="number" id="cooldownMinSec" min="1" step="1" />
       </label>
       <label>
-        Break length — maximum (seconds)
+        <span data-i18n="optCooldownMax"></span>
         <input type="number" id="cooldownMaxSec" min="1" step="1" />
       </label>
-      <p class="field-hint">A longer randomized pause every N unsaves, on top of the per-post delay above. Turning this off makes runs noticeably more bot-like.</p>
+      <p class="field-hint" data-i18n="optCooldownHint"></p>
     </fieldset>
 
     <fieldset>
-      <legend>Session limit</legend>
+      <legend data-i18n="optSessionLegend"></legend>
       <label>
-        Stop after this many actions in one run
+        <span data-i18n="optSessionMax"></span>
         <input type="number" id="maxActionsPerSession" min="1" step="1" />
       </label>
-      <p class="field-hint">Once reached, the panel pauses and you click Start again to continue — keeps an unattended run from going for hours straight.</p>
+      <p class="field-hint" data-i18n="optSessionHint"></p>
+    </fieldset>
+
+    <fieldset>
+      <legend data-i18n="optAdvancedLegend"></legend>
+      <label>
+        <span data-i18n="optCustomLabel"></span>
+        <input type="text" id="customUnsaveLabel" class="text-input" autocomplete="off" spellcheck="false" />
+      </label>
+      <p class="field-hint" data-i18n="optCustomLabelHint"></p>
     </fieldset>
 
     <div class="options-actions">
-      <button type="submit" id="save-btn">Save</button>
-      <button type="button" id="restore-btn">Restore recommended defaults</button>
+      <button type="submit" id="save-btn" data-i18n="optSave"></button>
+      <button type="button" id="restore-btn" data-i18n="optRestore"></button>
     </div>
     <p class="options-status" id="options-status" role="status"></p>
   </form>
 
   <p class="options-support">
-    ☕ If this extension saved you time, consider
-    <a href="https://paypal.me/meedruoka" target="_blank" rel="noopener noreferrer">supporting its development</a>.
+    <span data-i18n="optSupport"></span>
+    <a id="support-link" target="_blank" rel="noopener noreferrer" data-i18n="optSupportLink"></a>.
   </p>
 </main>
 <script src="../config.js"></script>
+<script src="../i18n.js"></script>
 <script src="options.js"></script>
 </body>
 </html>

@@ -11,7 +11,7 @@ update later.
 ## Summary (short description, ≤132 characters)
 
 ```
-Bulk-unsaves your saved Instagram posts, one at a time, in your own browser session. No login stored, no API calls.
+Bulk-unsaves your saved Instagram posts, one at a time, in your own browser session. Any Instagram language. No login, no APIs.
 ```
 
 ## Detailed description
@@ -31,10 +31,16 @@ BUILT-IN SAFETY
 - Randomized delays between posts, plus an optional periodic cooldown break — both configurable in Settings — so activity doesn't look like a flat, continuous bot run.
 - A per-run session limit, after which it pauses and waits for you to click Start again rather than running unattended for hours.
 - If it can't confidently identify a post's "unsave" control, it skips that post and logs why instead of guessing.
-- If Instagram shows its own rate-limit message, the extension stops immediately.
+- If Instagram shows its own rate-limit message — or simply starts ignoring the clicks, which is what throttling usually looks like — the extension stops immediately.
+- Every stop explains itself in the panel. It never skips your whole list in silence and then reports success.
 
 SETTINGS
-Open the Settings page to adjust the pacing delay, the cooldown break, and the session limit, or restore the recommended defaults at any time.
+Open the Settings page to adjust the interface language, the pacing delay, the cooldown break, and the session limit, or restore the recommended defaults at any time.
+
+LANGUAGES
+Works whatever language your Instagram is in — it recognises Instagram's own buttons in 32 languages, and if yours isn't among them you can enter the button's label once under Settings > Advanced.
+
+The extension's own interface is available in English, French, Spanish, Portuguese, Italian, German, Dutch, Turkish, Arabic (right-to-left), Hindi, Indonesian and Russian — set automatically from your browser's language, or chosen manually in Settings.
 
 This extension is not affiliated with, endorsed by, or sponsored by Instagram or Meta Platforms, Inc. Instagram is a trademark of Meta Platforms, Inc.
 ```
