@@ -7,7 +7,7 @@ A small, local-only Chrome extension that helps you unsave posts you've saved on
 - Only activates on your Saved pages: the **All posts** grid, a **named collection**, and the collections overview (where it explains that you need to open one of the two grids). It stays out of the way everywhere else on Instagram.
 - Injects a small floating panel with **Start**, **Stop**, a live status line, counters for posts unsaved/skipped, and **Settings**/**Reset** links. Drag it anywhere — it remembers where you put it — or **minimize** it to a title pill that still shows the live count.
 - A **Settings page** (`options.html`, reachable via the panel's Settings link or the extension's "Details → Extension options" in `chrome://extensions`) lets you configure the interface language, the pacing delay, the periodic cooldown break, and the per-run session cap — see *Settings* below. It opens itself once on first install, so a fresh install isn't just a new toolbar icon and no explanation. Ships with a recommended default; you can override any of it.
-- The panel, popup and Settings page are available in **12 languages** — see *Language support* below for the list, and for what is (and isn't) translated.
+- The panel and Settings page are available in **12 languages** — see *Language support* below for the list, and for what is (and isn't) translated.
 - Counters and the skip log persist across page reloads and the session cap (via `chrome.storage.local`, kept entirely on your machine — no network calls). Click **Reset** in the panel header to clear them.
 - On **Start**: finds a saved post tile, opens it, finds its "remove from saved" control (matched by `aria-label`, not CSS classes — see *Why aria-label matching* below), clicks it, closes the post, and moves on. Scrolls to load more tiles once the visible ones are exhausted, and stops automatically when nothing new loads.
 - Uses a randomized delay between posts, an optional periodic cooldown break, and a hard stop after N actions in a single run — all configurable from Settings (see *Rate limits* below for the recommended defaults and why they exist).
@@ -30,9 +30,10 @@ A small, local-only Chrome extension that helps you unsave posts you've saved on
 ## Using it
 
 1. Log into Instagram yourself, normally, in a tab.
-2. Navigate to your Saved page: `instagram.com/<your-username>/saved/all-posts/` (or open **Profile → Saved**).
-   - Clicking through to Saved from inside Instagram works too — the panel follows the app's own navigation, so no refresh is needed. (If the panel is ever missing after an extension update, one refresh of the tab reattaches it.)
-3. A small "Saved Post Cleaner" panel appears in the bottom-right corner.
+2. Click the **Saved Post Cleaner toolbar icon**. It takes you straight to your Saved posts (`instagram.com/<your-username>/saved/all-posts/`), from any tab. The panel never appears on its own — this click is what brings it up.
+   - It learns your username the first time you visit your Saved page, or reads it from Instagram's navigation bar. If it can't, it opens Instagram; open **Profile → Saved** once and it remembers from then on.
+   - Already on a Saved page? The click just shows the panel. After closing it with ✕, click the icon again to bring it back. (If it does nothing after an extension update, one refresh of the tab reattaches it.)
+3. A small "Saved Post Cleaner" panel appears in the bottom-right corner. Drag it anywhere, minimize it, or close it with ✕.
 4. Click **Start**. Watch it work — it opens each saved post, unsaves it, closes it, and moves to the next, scrolling to load more as needed.
 5. Click **Stop** at any time to halt after the current post finishes.
 6. If it reaches the end of your saved posts, it stops itself and says "Done."
@@ -54,7 +55,7 @@ The one exception to "takes effect on next reload" is **Language**: an already-o
 
 ## Language support
 
-The extension's own interface — the on-page panel, the toolbar popup, and the Settings page — ships in:
+The extension's own interface — the on-page panel and the Settings page — ships in:
 
 | | | |
 |---|---|---|

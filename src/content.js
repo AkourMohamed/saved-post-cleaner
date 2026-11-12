@@ -376,8 +376,20 @@
   }
   // True once the user has explicitly closed the panel with ✕ — suppresses
   // re-showing it when navigating back to the All posts grid, until the
-  // toolbar popup's IGSC_SHOW_PANEL message clears it again.
+  // toolbar icon's IGSC_SHOW_PANEL message clears it again.
   let dismissedByUser = false;
+
+  // The panel is built hidden and stays that way until the user clicks the
+  // toolbar icon (see background.js). Once revealed it follows the page as
+  // before — hidden when leaving Saved, back when returning — until ✕.
+  let revealed = false;
+
+  // Kept in sync with background.js: the toolbar click leaves a marker here
+  // so the page it navigates to knows the panel was asked for. Stale markers
+  // (an abandoned navigation) are ignored.
+  const PENDING_KEY = 'igscPending';
+  const USER_KEY = 'igscUser';
+  const PENDING_MAX_AGE_MS = 2 * 60 * 1000;
 
   function createPanel() {
     const panel = document.createElement('div');
@@ -448,19 +460,20 @@
 
     applyUiPrefs();
     renderPanelText();
+    if (!revealed || dismissedByUser) hidePanel();
 
     els.startBtn.addEventListener('click', startAutomation);
     els.stopBtn.addEventListener('click', requestStop);
     els.resetBtn.addEventListener('click', resetStats);
     // chrome.runtime.openOptionsPage() isn't available from a content script
-    // (only from extension pages like a background script or the popup) —
+    // (only from extension pages like a background script or the service worker) —
     // it fails silently there, so open the options page directly by URL
     // instead. chrome.runtime.getURL() *is* available to content scripts.
     els.settingsBtn.addEventListener('click', () => window.open(chrome.runtime.getURL('src/options/options.html'), '_blank'));
     // Minimize is the gentle version of closing: the panel shrinks to a
     // draggable title pill that still shows the running count, and one
     // click brings it back. ✕ still hides it outright for people who want
-    // it gone — but that now needs the toolbar popup to undo, which is
+    // it gone — but that now needs the toolbar icon to undo, which is
     // exactly why it shouldn't be the only way to get it out of the way.
     els.minimizeBtn.addEventListener('click', () => setMinimized(!ui.minimized));
     els.closeBtn.addEventListener('click', () => {
@@ -484,23 +497,130 @@
     if (panelEl) panelEl.classList.add('igsc-hidden');
   }
 
-  // Popup -> here: bring the panel back after it's been closed with ✕ (there's
+  // Toolbar icon (via background) -> here: bring the panel back after it's been closed with ✕ (there's
   // no other way to reveal it again short of reloading the page). Clears
   // dismissedByUser (see syncWithLocation below) so leaving and returning to
   // the All posts grid shows it again too, not just this one time.
   //
-  // sendResponse() is called explicitly (even though the popup doesn't use
+  // sendResponse() is called explicitly (even though the sender doesn't need
   // the response) — testing showed that leaving it implicit produced "The
   // message port closed before a response was received" on the sender's
   // side even though this listener ran fine, so don't rely on the sender
   // inferring "no response coming" from a listener that returns nothing.
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     if (message && message.type === 'IGSC_SHOW_PANEL') {
-      dismissedByUser = false;
-      showPanel();
+      revealPanel();
+      sendResponse({ ok: true });
+    } else if (message && message.type === 'IGSC_GO_SAVED') {
+      // Async: the username may need a moment to appear in the page. Reply
+      // when we know whether a navigation is actually under way, so the
+      // background can fall back to its own if not.
+      goToSaved().then((navigating) => sendResponse({ navigating }));
+      return true;
+    } else {
+      sendResponse();
     }
-    sendResponse();
+    return undefined;
   });
+
+  // Toolbar click on a Saved page. Safe to call before init() has built the
+  // panel: it records the intent, and createPanel() honours it.
+  function revealPanel() {
+    revealed = true;
+    dismissedByUser = false;
+    clearPending();
+    if (isSavedPage()) showPanel();
+  }
+
+  function clearPending() {
+    chrome.storage.local.remove(PENDING_KEY).catch(() => undefined);
+  }
+
+  // Instagram usernames: letters, digits, dot, underscore. These first path
+  // segments are app sections, never profiles.
+  const RESERVED_SEGMENTS = new Set([
+    'explore', 'reels', 'reel', 'p', 'direct', 'accounts', 'stories', 'tv',
+    'about', 'legal', 'privacy', 'web', 'developer', 'directory', 'challenge', 'emails', 'nametag',
+  ]);
+
+  function usernameFromPath(pathname) {
+    const m = /^\/([A-Za-z0-9._]+)\/saved(\/|$)/.exec(pathname);
+    return m ? m[1] : null;
+  }
+
+  // Best-effort read of the logged-in user's own profile link from the
+  // navigation. Instagram's labels are localised and its classes rotate, so
+  // this anchors on shape instead: a link to a bare /<name>/ that wraps the
+  // user's avatar image, inside navigation. Returns null rather than guess
+  // when nothing fits — the caller then waits and retries.
+  function usernameFromNav() {
+    const scopes = document.querySelectorAll('nav, [role="navigation"], [role="banner"]');
+    for (const scope of scopes) {
+      for (const a of scope.querySelectorAll('a[href^="/"]')) {
+        const m = /^\/([A-Za-z0-9._]+)\/?$/.exec(a.getAttribute('href') || '');
+        if (!m || RESERVED_SEGMENTS.has(m[1].toLowerCase())) continue;
+        if (a.querySelector('img')) return m[1];
+      }
+    }
+    return null;
+  }
+
+  async function rememberUsername(name) {
+    try {
+      await chrome.storage.local.set({ [USER_KEY]: name });
+    } catch (err) {
+      console.warn('[Saved Post Cleaner] Could not remember username:', err);
+    }
+  }
+
+  async function findUsername() {
+    const fromPath = usernameFromPath(window.location.pathname);
+    if (fromPath) return fromPath;
+    try {
+      const data = await chrome.storage.local.get(USER_KEY);
+      if (data[USER_KEY]) return data[USER_KEY];
+    } catch (err) {
+      /* fall through to the page */
+    }
+    // The navigation renders after the page loads, so give it a few seconds.
+    return waitFor(usernameFromNav, 8000, 250);
+  }
+
+  // Navigates this tab to the user's Saved posts. Returns true if it started
+  // one. The pending marker (set by the background) survives the page load
+  // so the Saved page reveals its panel.
+  async function goToSaved() {
+    const name = await findUsername();
+    if (!name) return false;
+    await rememberUsername(name);
+    const target = '/' + encodeURIComponent(name) + '/saved/all-posts/';
+    if (window.location.pathname !== target) window.location.assign(target);
+    return true;
+  }
+
+  // On every page load: if the toolbar was just clicked and we landed here,
+  // finish the job. On a Saved page that means revealing the panel; anywhere
+  // else on Instagram it means completing the trip to Saved (the case where
+  // the username wasn't known yet and the background could only open the
+  // home page).
+  async function consumePending() {
+    let pending = null;
+    try {
+      const data = await chrome.storage.local.get(PENDING_KEY);
+      pending = data[PENDING_KEY];
+    } catch (err) {
+      return;
+    }
+    if (!pending || Date.now() - (pending.ts || 0) > PENDING_MAX_AGE_MS) {
+      if (pending) clearPending();
+      return;
+    }
+    if (isSavedPage()) {
+      revealPanel();
+    } else if (!isPostOverlayPath(window.location.pathname)) {
+      await goToSaved();
+    }
+  }
 
   function startDrag(e) {
     // Let header buttons (Settings/Reset/Close) work normally instead of
@@ -1152,11 +1272,15 @@
   // unrelated page you've navigated to) if you genuinely navigate elsewhere.
   function syncWithLocation() {
     if (isSavedPage()) {
+      // Remember whose Saved page this is, so the toolbar can jump straight
+      // back here from anywhere.
+      const name = usernameFromPath(window.location.pathname);
+      if (name) rememberUsername(name);
       if (!started) {
         started = true;
         init();
       } else {
-        if (!dismissedByUser) showPanel();
+        if (revealed && !dismissedByUser) showPanel();
         refreshPageContext();
       }
     } else if (!isPostOverlayPath(window.location.pathname)) {
@@ -1182,4 +1306,5 @@
   window.addEventListener('popstate', syncWithLocation);
 
   syncWithLocation();
+  consumePending();
 })();
